@@ -93,7 +93,7 @@ Hopefully in the future, mods will provide a modfiles.xml file that describes wh
       <DefaultInstallPath>/hollow_knight_Data/Managed/Mods</DefaultInstallPath>
     </ModLink>
     <ModLink>
-      <Name>Player Data Tracker</Name><!-- API MOD --CONTAINS EXTRA DLLS.... ADD SUPPORT FOR THIS -->
+      <Name>Player Data Tracker</Name><!-- API MOD CONTAINS EXTRA DLLS.... ADD SUPPORT FOR THIS -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1uuchDM0xvHk_E--RH-WUffcHPpRZX-Eh]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
     </ModLink>
