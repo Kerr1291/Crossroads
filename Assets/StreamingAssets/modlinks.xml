@@ -90,7 +90,7 @@ Hopefully in the future, mods will provide a modfiles.xml file that describes wh
     <ModLink>
       <Name>Nightmare God Grimm</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=0B1-JBoX3q-gVYkUwSjNjZFNwTXM]]></Link>
-      <DefaultInstallPath>/hollow_knight_Data/Managed/Mods</DefaultInstallPath>
+      <DefaultInstallPath>/</DefaultInstallPath>
     </ModLink>
     <ModLink>
       <Name>Player Data Tracker</Name><!-- API MOD CONTAINS EXTRA DLLS.... ADD SUPPORT FOR THIS -->

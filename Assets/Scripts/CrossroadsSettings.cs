@@ -358,7 +358,8 @@ public class CrossroadsSettings : MonoBehaviour
     {
         if( Application.isEditor && removeCreatedFoldersInEditorMode )
         {
-            Directory.Delete( UnityEngine.Application.dataPath + "/" + "Settings" + "/", true );
+            if( Directory.Exists( UnityEngine.Application.dataPath + "/" + "Settings" + "/" ) )
+                Directory.Delete( UnityEngine.Application.dataPath + "/" + "Settings" + "/", true );
         }
     }
 }

@@ -163,6 +163,7 @@ public class ModInstaller : MonoBehaviour {
             CrossroadsSettings.ModSettings modSettings = new CrossroadsSettings.ModSettings();
             modSettings.modName = modname;
 
+            status.text = "Installing files for " + modname;
             foreach( string stagedPath in stagedPaths[ modname ] )
             {
                 //TODO: read the install path from a ModManfiest element for the mod
@@ -170,6 +171,12 @@ public class ModInstaller : MonoBehaviour {
 
                 //install the mod files and record them in our mod settings
                 InstallModAtPath( stagedPath, installPath, modSettings );
+            }
+
+            status.text = "Cleaning staged files for " + modname;
+            foreach( string stagedPath in stagedPaths[ modname ] )
+            {
+                CleanPath( stagedPath.TrimEnd('/') );
             }
 
             //record the mod as "installed"
@@ -185,13 +192,8 @@ public class ModInstaller : MonoBehaviour {
         DirectoryInfo from = new DirectoryInfo(sourcePath);
         DirectoryInfo to = new DirectoryInfo(installPath);
 
-        CopyAll( from, to );
-
-        CleanPath( sourcePath );
+        CopyAll( from, to, modSettings );
     }
-    
-
-
 
     static bool ReadSettingsFromFile( string path, out ModManifest manifest )
     {
@@ -234,6 +236,12 @@ public class ModInstaller : MonoBehaviour {
             return;
         }
 
+        //Exit silently if the path doesn't exist (nothing to delete... so we're good)
+        if( !Directory.Exists( path ) )
+        {
+            return;
+        }
+
         try
         {
             Directory.Delete( path, true );
@@ -266,7 +274,6 @@ public class ModInstaller : MonoBehaviour {
         foreach( FileInfo fi in source.GetFiles() )
         {
             string destFile = Path.Combine( target.ToString(), fi.Name );
-            Debug.Log( " Copying from " + fi.FullName + " to " + destFile );
 
             if( File.Exists( destFile ) )
                 File.SetAttributes( destFile, FileAttributes.Normal );
@@ -274,12 +281,27 @@ public class ModInstaller : MonoBehaviour {
             //Attempting to handle UnauthorizedAccessException and anything else that might happen when copying
             try
             {
-                fi.CopyTo( destFile, true );
-
-                //record the install location of this file so we can uninstall it later
-                if( modSettings != null )
+                //don't copy a file that's already been copied
+                if( modSettings == null || modSettings.modFiles == null || !modSettings.modFiles.Contains( destFile ) )
                 {
-                    modSettings.modFiles.Add( destFile );
+                    //if( modSettings != null && modSettings.modFiles != null )
+                    //{
+                    //    Debug.Log( "List of files already copied" );
+                    //    foreach( var v in modSettings.modFiles )
+                    //        Debug.Log( v );
+                    //}
+
+                    Debug.Log( " Copying from " + fi.FullName + " to " + destFile );
+                    fi.CopyTo( destFile, true );
+
+                    //record the install location of this file so we can uninstall it later
+                    if( modSettings != null )
+                    {
+                        if( modSettings.modFiles == null )
+                            modSettings.modFiles = new List<string>();
+
+                        modSettings.modFiles.Add( destFile );
+                    }
                 }
             }
             catch( Exception e )
@@ -292,7 +314,7 @@ public class ModInstaller : MonoBehaviour {
         foreach( DirectoryInfo diSourceSubDir in source.GetDirectories() )
         {
             DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-            CopyAll( diSourceSubDir, nextTargetSubDir );
+            CopyAll( diSourceSubDir, nextTargetSubDir, modSettings );
         }
     }
 
@@ -301,7 +323,8 @@ public class ModInstaller : MonoBehaviour {
     {
         if( Application.isEditor && removeCreatedFoldersInEditorMode )
         {
-            Directory.Delete( Application.dataPath + "/" + "Temp" + "/", true );
+            if( Directory.Exists( Application.dataPath + "/" + "Temp" + "/" ) )
+                Directory.Delete( Application.dataPath + "/" + "Temp" + "/", true );
         }
     }
 }

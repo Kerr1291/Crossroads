@@ -9,7 +9,6 @@ using System.IO;
 using Ionic.Zip;
 using System;
 
-//TODO
 public class ModDownloader : MonoBehaviour 
 {
     public CrossroadsSettings settings;
