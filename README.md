@@ -15,3 +15,6 @@ Uninstall mods
 Manage mod dependencies and conflicts.
 
 ...and more?
+
+
+Feel free to try the current release, it should work on Windows 7 or 10.
