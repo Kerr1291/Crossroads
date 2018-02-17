@@ -92,30 +92,36 @@ public class ModInstaller : MonoBehaviour {
     public static void CopyAll( DirectoryInfo source, DirectoryInfo target )
     {
         if( source.FullName.ToLower() == target.FullName.ToLower() )
-        {
             return;
-        }
 
         // Check if the target directory exists, if not, create it.
         if( Directory.Exists( target.FullName ) == false )
-        {
             Directory.CreateDirectory( target.FullName );
-        }
 
         // Copy each file into it's new directory.
         foreach( FileInfo fi in source.GetFiles() )
         {
-            Debug.Log( " Copying from " + fi.FullName );
-            //Debug.Log( @"Copying " + target.FullName +"/"+ fi.Name );
-            fi.CopyTo( Path.Combine( target.ToString(), fi.Name ), true );
-            Debug.Log( " to " + Path.Combine( target.ToString(), fi.Name ) );
+            string destFile = Path.Combine( target.ToString(), fi.Name );
+            Debug.Log( " Copying from " + fi.FullName + " to " + destFile );
+
+            if( File.Exists( destFile ) )
+                File.SetAttributes( destFile, FileAttributes.Normal );
+
+            //Attempting to handle UnauthorizedAccessException 
+            try
+            {
+                fi.CopyTo( destFile, true );
+            }
+            catch(Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show( "Error copying mod file from "+fi.FullName+" to "+destFile+". Error Message: "+e.Message );
+            }
         }
 
         // Copy each subdirectory using recursion.
         foreach( DirectoryInfo diSourceSubDir in source.GetDirectories() )
         {
-            DirectoryInfo nextTargetSubDir =
-            target.CreateSubdirectory(diSourceSubDir.Name);
+            DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
             CopyAll( diSourceSubDir, nextTargetSubDir );
         }
     }

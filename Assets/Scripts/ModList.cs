@@ -104,6 +104,7 @@ public class ModList : MonoBehaviour {
         string defaultInstallPath = downloader.GetDefaultInstallPathByModByName(modname);
 
         Debug.Log( defaultInstallPath );
+
         installer.InstallMod( modpath, modname, defaultInstallPath );
     }
 
