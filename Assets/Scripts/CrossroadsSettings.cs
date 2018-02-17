@@ -190,7 +190,7 @@ public class CrossroadsSettings : MonoBehaviour
 
         //BaseInstallFolder
 
-        //int counter = 0;
+        int counter = 0;
         string line;
         Debug.Log( "parsing config" );
 
@@ -237,7 +237,11 @@ public class CrossroadsSettings : MonoBehaviour
                     }
                 }
             }
-            //counter++;
+            counter++;
+
+            //TEST FOR NOW
+            if( counter > 1500 )
+                return false;
         }
 
         return false;
@@ -348,4 +352,21 @@ public class CrossroadsSettings : MonoBehaviour
         if(OnLoaded != null)
             OnLoaded.Invoke();
     }
+
+
+    void OnApplicationQuit()
+    {
+        if( Application.isEditor )
+        {
+            Directory.Delete( UnityEngine.Application.dataPath + "/" + "Settings" + "/", true );
+        }
+    }
+
+    //void OnDestroy()
+    //{
+    //    if( Application.isEditor )
+    //    {
+    //        Directory.Delete( UnityEngine.Application.dataPath + "/" + "Settings" + "/", true );
+    //    }
+    //}
 }

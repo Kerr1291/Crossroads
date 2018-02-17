@@ -204,9 +204,19 @@ public class ModInstaller : MonoBehaviour {
         Debug.Log( "startIndex = " + startIndex );
 
         int length = modSettings.modDll.IndexOf('\\',startIndex+1) - startIndex;
-        Debug.Log( "length = " + length );
 
-        string realModPath = modSettings.modDll.Substring(startIndex,length);
+        string realModPath = "";
+
+        if( length < 0 )
+        {
+            length = 0;
+        }
+        else
+        {
+            Debug.Log( "length = " + length );
+
+            realModPath = modSettings.modDll.Substring( startIndex, length );
+        }
 
         if( realModPath.TrimEnd( '/' ).Contains( "hollow_knight_Data" ) )
         {
