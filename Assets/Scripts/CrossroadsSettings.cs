@@ -11,6 +11,9 @@ using System;
 
 public class CrossroadsSettings : MonoBehaviour
 {
+    [Header("Set to false to keep created files after leaving play mode")]
+    public bool removeCreatedFoldersInEditorMode = true;
+
     //TODO: make these input fields and update the config file when these are changed
     public Text gamePathLabel;
     public Text localRepoLabel;
@@ -85,8 +88,8 @@ public class CrossroadsSettings : MonoBehaviour
     {
         [XmlElement("ModName")]
         public string modName;
-        [XmlElement("ModPath")]
-        public string modDll;
+        [XmlArray("ModFiles")]
+        public List<string> modFiles;
     }
     
     //file finder, use to find the hollow knight folder when first creating the settings file
@@ -136,9 +139,6 @@ public class CrossroadsSettings : MonoBehaviour
         {
             CreateDefaultSettings();
 
-            //TODO: remove later, this is just for demo purposes
-            //CreateExampleModInfo();
-
             //use the debug skip while testing
             if(debugSkipHollowKnightFolderFinder)
             {
@@ -173,7 +173,7 @@ public class CrossroadsSettings : MonoBehaviour
         }
         catch(Exception e)
         {
-            Debug.LogError( "Cannot find steam! Skipping the registry detection step..." );
+            Debug.LogError( "Cannot find steam! Skipping the registry detection step... Error message: "+e.Message );
         }
 
         if( value == null )
@@ -239,8 +239,8 @@ public class CrossroadsSettings : MonoBehaviour
             }
             counter++;
 
-            //TEST FOR NOW
-            if( counter > 1500 )
+            //TEST FOR NOW (update/remove me)
+            if( counter > 150000 )
                 return false;
         }
 
@@ -353,20 +353,12 @@ public class CrossroadsSettings : MonoBehaviour
             OnLoaded.Invoke();
     }
 
-
+    //Cleanup install folders on quit in editor mode
     void OnApplicationQuit()
     {
-        if( Application.isEditor )
+        if( Application.isEditor && removeCreatedFoldersInEditorMode )
         {
             Directory.Delete( UnityEngine.Application.dataPath + "/" + "Settings" + "/", true );
         }
     }
-
-    //void OnDestroy()
-    //{
-    //    if( Application.isEditor )
-    //    {
-    //        Directory.Delete( UnityEngine.Application.dataPath + "/" + "Settings" + "/", true );
-    //    }
-    //}
 }
