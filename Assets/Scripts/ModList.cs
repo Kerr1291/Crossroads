@@ -98,14 +98,23 @@ public class ModList : MonoBehaviour {
 
     void InstallDownloadedMod(string modname, string modpath)
     {
-        Debug.Log( "installing " + modname );
-        Debug.Log( "at " + modpath );
+        StartCoroutine( DoInstallDownloadedMod( modname, modpath ) );
+    }
+
+    IEnumerator DoInstallDownloadedMod(string modname, string modpath)
+    {
+        Debug.Log( "installing " + modname + "at " + modpath );
         status.text = "Installing " + modname;
+
+        yield return new WaitForSeconds( .1f );
+
         string defaultInstallPath = downloader.GetDefaultInstallPathByModByName(modname);
 
-        Debug.Log( defaultInstallPath );
+        //Debug.Log( defaultInstallPath );
 
         installer.InstallMod( modpath, modname, defaultInstallPath );
+
+        yield break;
     }
 
     void RemoveMod( ModListElement modElement )

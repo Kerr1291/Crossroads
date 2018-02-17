@@ -114,7 +114,7 @@ public class ModDownloader : MonoBehaviour
         }
 
         Debug.Log("Downloaded bytes: " + www.bytesDownloaded);
-        status.text = "Downloaded " + www.bytesDownloaded + " bytes. Download Complete.";
+        status.text = modname+" Downloaded " + www.bytesDownloaded + " bytes. Download Complete.";
         //TODO: fail/break here if didn't download enough bytes
 
         FileStream fstream = null;

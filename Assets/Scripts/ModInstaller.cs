@@ -352,7 +352,7 @@ public class ModInstaller : MonoBehaviour {
                         Directory.CreateDirectory( modReadmePath );
 
                     Debug.Log( " Copying readme from " + fi.FullName + " to " + modReadme );
-                    fi.CopyTo( modReadme );
+                    fi.CopyTo( modReadme, true );
 
                     continue;
                 }
