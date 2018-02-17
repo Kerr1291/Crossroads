@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<ModLinks xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DriveLink>https://drive.google.com/drive/folders/0B_b9PFqx_PR9Um9MeFZMV21oWGs?usp=sharing</DriveLink>
+  <ModList>
+<!--
+
+To update or change a mod link:
+1. Go to https://drive.google.com/drive/folders/0B_b9PFqx_PR9Um9MeFZMV21oWGs?usp=sharing
+2. Select the mod you want to get the link for and open the folder.
+3. Open the .zip file of the mod.
+4. Select "Get sharable link"
+5. Copy the link (example from lightbringer: https://drive.google.com/file/d/1JGfVZ9UpkkI8r6DdOm9-dFEcSkL6Ouf9/view?usp=sharing )
+6. Copy the ID from the link into the mod's ID field: (example: 1JGfVZ9UpkkI8r6DdOm9-dFEcSkL6Ouf9 goes into <![CDATA[https://drive.google.com/uc?export=download&id=1JGfVZ9UpkkI8r6DdOm9-dFEcSkL6Ouf9]]>
+7. done!
+nb. To figure out where the default install path should go, open the zip and match it to that level of the hollow knight folder. 
+Hopefully in the future, mods will provide a modfiles.xml file that describes where things should go.
+  
+-->
+    <ModLink>
+      <Name>Modding API</Name>
+      <Link><![CDATA[https://drive.google.com/uc?export=download&id=1PUulDJDeHEfIEl1hAithE1XLT8AXqOZ4]]></Link>
+      <DefaultInstallPath>/</DefaultInstallPath>
+    </ModLink>
+    <ModLink>
+      <Name>Hell Mod</Name>
+      <Link><![CDATA[https://drive.google.com/uc?export=download&id=1_VkTWanS5Tx8H50RAc2S3zEX_QhADJuV]]></Link>
+      <DefaultInstallPath>/hollow_knight_Data</DefaultInstallPath>
+    </ModLink>
+    <ModLink>
+      <Name>Lightbringer</Name>
+      <Link><![CDATA[https://drive.google.com/uc?export=download&id=1JGfVZ9UpkkI8r6DdOm9-dFEcSkL6Ouf9]]></Link>
+      <DefaultInstallPath>/</DefaultInstallPath>
+    </ModLink>
+    <ModLink>
+      <Name>Blackmoth</Name>
+      <Link><![CDATA[https://drive.google.com/uc?export=download&id=11u4QTDUeq_09t8DjXrMY0qIyKaWGz7Gz]]></Link>
+      <DefaultInstallPath>/</DefaultInstallPath>
+    </ModLink>
+    <ModLink>
+      <Name>Debug Mod</Name>
+      <Link><![CDATA[https://drive.google.com/uc?export=download&id=0BzihlMHqh5UpWXhoS2hyZ2JUMEU]]></Link>
+      <DefaultInstallPath>/</DefaultInstallPath>
+    </ModLink>
+    <ModLink>
+      <Name>Randomizer</Name>
+      <Link><![CDATA[https://drive.google.com/uc?export=download&id=0BzihlMHqh5UpTGEwVHJXc05NeGM]]></Link>
+      <DefaultInstallPath>/</DefaultInstallPath>
+    </ModLink>
+  </ModList>
+</ModLinks>
