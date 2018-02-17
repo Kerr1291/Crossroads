@@ -15,12 +15,7 @@ To update or change a mod link:
 nb. To figure out where the default install path should go, open the zip and match it to that level of the hollow knight folder. 
 Hopefully in the future, mods will provide a modfiles.xml file that describes where things should go.
   
-  Mods that write to assembly-csharp are not compatible
-  
-  
-  
-  https://drive.google.com/file/d/0BzihlMHqh5UpUVQ5ZGlEdlcxOXM/view?usp=sharing
-  
+  Mods that write to assembly-csharp are not compatible  
 -->
     <ModLink>
       <Name>Modding API</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
@@ -98,11 +93,6 @@ Hopefully in the future, mods will provide a modfiles.xml file that describes wh
       <DefaultInstallPath>/hollow_knight_Data/Managed/Mods</DefaultInstallPath>
     </ModLink>
     <ModLink>
-      <Name>Nightmare God Grimm</Name><!-- API MOD -->
-      <Link><![CDATA[https://drive.google.com/uc?export=download&id=0B1-JBoX3q-gVYkUwSjNjZFNwTXM]]></Link>
-      <DefaultInstallPath>/</DefaultInstallPath>
-    </ModLink>
-    <ModLink>
       <Name>Player Data Tracker</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1uuchDM0xvHk_E--RH-WUffcHPpRZX-Eh]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
@@ -111,6 +101,6 @@ Hopefully in the future, mods will provide a modfiles.xml file that describes wh
       <Name>Charm Notch Mod</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=0BzihlMHqh5UpUVQ5ZGlEdlcxOXM]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
-    </ModLink>    
+    </ModLink>
   </ModList>
 </ModLinks>
