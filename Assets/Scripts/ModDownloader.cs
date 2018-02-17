@@ -94,27 +94,27 @@ public class ModDownloader : MonoBehaviour
             //TODO: enable a cancel button for them
 
             //TODO: have this set the value on a progress bar
-            Debug.Log(www.progress);
+            //Debug.Log(www.progress);
 
 
-            if( www.progress > .1f )
-            {
-                status.text = "Downloading " + modname +" ("+(float)www.progress+"%)";
-            }
-            else
-            {
-                status.text = "Downloaded " + www.bytesDownloaded + " bytes";
+            //if( www. > .1f )
+            //{
+            //    status.text = "Downloading " + modname +" ("+(float)www.progress+"%)";
+            //}
+            //else
+            //{
+                status.text = "Downloading "+modname+": " + www.bytesDownloaded + "  bytes downloaded...";
 
                 if( www.bytesDownloaded == 0 )
                     status.text = "Connecting...";
-            }
+            //}
 
 
             yield return null;
         }
 
         Debug.Log("Downloaded bytes: " + www.bytesDownloaded);
-        status.text = "Downloaded " + www.bytesDownloaded + "bytes. Download Complete.";
+        status.text = "Downloaded " + www.bytesDownloaded + " bytes. Download Complete.";
         //TODO: fail/break here if didn't download enough bytes
 
         FileStream fstream = null;

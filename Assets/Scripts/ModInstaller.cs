@@ -21,6 +21,7 @@ public class ModInstaller : MonoBehaviour {
 
     public Text status;
 
+
     [XmlRoot( "ModManifest" )]
     public class ModManifest
     {
@@ -189,9 +190,13 @@ public class ModInstaller : MonoBehaviour {
     {
         Debug.Log( "Copying mod files from: "+ sourcePath +" to "+installPath);
 
+        string backupRoot = GetModBackupPath(modSettings.modName);
+
         DirectoryInfo from = new DirectoryInfo(sourcePath);
         DirectoryInfo to = new DirectoryInfo(installPath);
+        DirectoryInfo backup = new DirectoryInfo(backupRoot);
 
+        BackupAll( from, to, backup, modSettings );
         CopyAll( from, to, modSettings );
     }
 
@@ -252,8 +257,63 @@ public class ModInstaller : MonoBehaviour {
         }
     }
 
+    public static void BackupAll( DirectoryInfo source, DirectoryInfo target, DirectoryInfo backup, CrossroadsSettings.ModSettings modSettings = null )
+    {
+        if( !Directory.Exists( backup.FullName ) )
+            Directory.CreateDirectory( backup.FullName );
+
+        // Backup each file into it's backup directory.
+        foreach( FileInfo fi in source.GetFiles() )
+        {
+            string destFile = Path.Combine( target.ToString(), fi.Name );
+            string backupFile = Path.Combine( backup.ToString(), fi.Name );
+            
+            //don't backup readme files
+            if( destFile.ToLower().Contains( "readme" ) )
+                continue;
+
+            if( File.Exists( destFile ) )
+            {
+                try
+                {
+                    //don't backup a file that's already been backed up
+                    if( modSettings == null || modSettings.backupFiles == null || !modSettings.backupFiles.Contains( destFile ) )
+                    {
+                        //Don't double-backup a file, we might destroy an original 
+                        if( !File.Exists( backupFile ) )
+                        {
+                            Debug.Log( " Backing up " + destFile + " to " + backupFile );
+                            File.Copy( destFile, backupFile );
+                        }
+
+                        //record the install location of this file so we can uninstall it later
+                        if( modSettings != null )
+                        {
+                            if( modSettings.backupFiles == null )
+                                modSettings.backupFiles = new List<string>();
+
+                            modSettings.backupFiles.Add( backupFile );
+                        }
+                    }
+                }
+                catch( Exception e )
+                {
+                    System.Windows.Forms.MessageBox.Show( "Error backup up mod file from " + destFile + " to " + backupFile + ". Error Message: " + e.Message );
+                }
+            }
+        }
+
+        // Backup each subdirectory using recursion.
+        foreach( DirectoryInfo diSourceSubDir in source.GetDirectories() )
+        {
+            DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
+            DirectoryInfo nextBackupSubDir = backup.CreateSubdirectory(diSourceSubDir.Name);
+            BackupAll( diSourceSubDir, nextTargetSubDir, nextBackupSubDir, modSettings );
+        }
+    }
+        
     //original method taken from: https://stackoverflow.com/questions/9053564/c-sharp-merge-one-directory-with-another
-    public static void CopyAll( DirectoryInfo source, DirectoryInfo target, CrossroadsSettings.ModSettings modSettings = null )
+    public void CopyAll( DirectoryInfo source, DirectoryInfo target, CrossroadsSettings.ModSettings modSettings = null )
     {
         if( source.FullName.ToLower() == target.FullName.ToLower() )
             return;
@@ -274,11 +334,34 @@ public class ModInstaller : MonoBehaviour {
         foreach( FileInfo fi in source.GetFiles() )
         {
             string destFile = Path.Combine( target.ToString(), fi.Name );
-
+            
             if( File.Exists( destFile ) )
                 File.SetAttributes( destFile, FileAttributes.Normal );
 
             //Attempting to handle UnauthorizedAccessException and anything else that might happen when copying
+            
+            //don't copy the readme files to the normal location
+            if( modSettings != null && destFile.ToLower().Contains( "readme" ) )
+            {
+                string modReadmePath = GetModReadmePath(modSettings.modName);
+                string modReadme = Path.Combine( modReadmePath, fi.Name );
+
+                try
+                {
+                    if( !Directory.Exists( modReadmePath ) )
+                        Directory.CreateDirectory( modReadmePath );
+
+                    Debug.Log( " Copying readme from " + fi.FullName + " to " + modReadme );
+                    fi.CopyTo( modReadme );
+
+                    continue;
+                }
+                catch( Exception e )
+                {
+                    System.Windows.Forms.MessageBox.Show( "Error copying readme file from " + fi.FullName + " to " + modReadme + ". Error Message: " + e.Message );
+                }
+            }
+
             try
             {
                 //don't copy a file that's already been copied
@@ -316,6 +399,16 @@ public class ModInstaller : MonoBehaviour {
             DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
             CopyAll( diSourceSubDir, nextTargetSubDir, modSettings );
         }
+    }
+
+    string GetModBackupPath( string modname )
+    {
+        return settings.BackupPath + "/" + modname + "/";
+    }
+
+    string GetModReadmePath( string modname )
+    {
+        return settings.ReadmePath + "/" + modname + "/";
     }
 
     //Cleanup install folders on quit in editor mode

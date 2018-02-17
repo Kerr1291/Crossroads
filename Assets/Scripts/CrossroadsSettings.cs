@@ -57,7 +57,7 @@ public class CrossroadsSettings : MonoBehaviour
         {
             if(!string.IsNullOrEmpty(localModRepoFolderPath))
                 return localModRepoFolderPath;
-            return SettingsFolderPath + localModRepoFolderName;
+            return UnityEngine.Application.dataPath + "/" + localModRepoFolderName;
         }
     }
 
@@ -66,6 +66,22 @@ public class CrossroadsSettings : MonoBehaviour
 
     [SerializeField]
     string defaultGameFolderName = "Hollow Knight";
+
+    public string BackupPath {
+        get {
+            if( Settings == null )
+                return "Settings not loaded";
+            return Settings.gamePath + "/Backup";
+        }
+    }
+
+    public string ReadmePath {
+        get {
+            if( Settings == null )
+                return "Settings not loaded";
+            return Settings.gamePath + "/Readme";
+        }
+    }
 
     [XmlRoot("AppSettings")]
     public class AppSettings
@@ -90,6 +106,8 @@ public class CrossroadsSettings : MonoBehaviour
         public string modName;
         [XmlArray("ModFiles")]
         public List<string> modFiles;
+        [XmlArray("BackupFiles")]
+        public List<string> backupFiles;
     }
     
     //file finder, use to find the hollow knight folder when first creating the settings file
@@ -360,6 +378,9 @@ public class CrossroadsSettings : MonoBehaviour
         {
             if( Directory.Exists( UnityEngine.Application.dataPath + "/" + "Settings" + "/" ) )
                 Directory.Delete( UnityEngine.Application.dataPath + "/" + "Settings" + "/", true );
+
+            if( Directory.Exists( UnityEngine.Application.dataPath + "/" + "DownloadedMods" + "/" ) )
+                Directory.Delete( UnityEngine.Application.dataPath + "/" + "DownloadedMods" + "/", true );            
         }
     }
 }
