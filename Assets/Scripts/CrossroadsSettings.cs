@@ -11,6 +11,9 @@ using System;
 
 public class CrossroadsSettings : MonoBehaviour
 {
+    //Find us at #modding here
+    //Hollow Knight Discord: https://discord.gg/jru7cvT
+
     [Header("Set to false to keep created files after leaving play mode")]
     public bool removeCreatedFoldersInEditorMode = true;
 
@@ -26,6 +29,8 @@ public class CrossroadsSettings : MonoBehaviour
 
     [SerializeField]
     bool debugSkipHollowKnightFolderFinder = false;
+
+    bool foundGamePath = false;
 
     [SerializeField]
     string settingsFolderName = "Settings";
@@ -98,45 +103,46 @@ public class CrossroadsSettings : MonoBehaviour
     }
 
     public AppSettings Settings { get; private set; }
-
-    [XmlRoot( "ModSettings" )]
-    public class ModSettings
-    {
-        [XmlElement("ModName")]
-        public string modName;
-        [XmlArray("ModFiles")]
-        public List<string> modFiles;
-        [XmlArray("BackupFiles")]
-        public List<string> backupFiles;
-    }
     
     //file finder, use to find the hollow knight folder when first creating the settings file
     FileFinder finder = new FileFinder();
 
-    void Awake()
-    {
-        Setup();
-    }
-
-    void Setup()
+    IEnumerator Start()
     {
         Loaded = false;
-        SetupDefaults();
+        yield return SetupDefaults();
 
         AppSettings appSettings = new AppSettings();
-        if(!ReadSettingsFromFile(out appSettings))
+        if( !ReadSettingsFromFile( out appSettings ) )
         {
-            System.Windows.Forms.MessageBox.Show( "Failed to read settings file. ");
+            System.Windows.Forms.MessageBox.Show( "Failed to read settings file. " );
             Application.Quit();
         }
-
-        //Debug.LogError( "GOT FILE" );
+        else
+        {
+            if( File.Exists( Settings.gamePath + "/hollow_knight.exe" ) )
+            {
+                foundGamePath = true;
+            }
+            else
+            {
+                if( Application.isEditor )
+                    Debug.LogError( "Warning: Did not find hollow_knight.exe at " + Settings.gamePath );
+                else
+                    System.Windows.Forms.MessageBox.Show( "Warning: Did not find hollow_knight.exe at "+Settings.gamePath );
+            }
+        }
+        
         //if the finder has started, don't load yet
-        if(!finder.Running)
-            LoadSettings(appSettings);
+        if( finder.Running || !foundGamePath )
+        {
+            //Error???? Though we may have already errored by now so this may be reduntant
+        }
+
+        LoadSettings( appSettings );
     }
     
-    public void AddInstalledModInfo(ModSettings modSettings)
+    public void AddInstalledModInfo( ModSettings modSettings )
     {
         Settings.installedMods.Add( modSettings );
         WriteSettingsToFile( Settings );
@@ -148,7 +154,23 @@ public class CrossroadsSettings : MonoBehaviour
         WriteSettingsToFile(Settings);
     }
 
-    void SetupDefaults()
+    public ModSettings GetInstalledModByName(string modname)
+    {
+        if( Settings == null )
+            return null;
+
+        foreach(ModSettings ms in Settings.installedMods)
+        {
+            if(ms.modName == modname)
+            {
+                return ms;
+            }
+        }
+
+        return null;
+    }
+
+    IEnumerator SetupDefaults()
     {
         if(!Directory.Exists(SettingsFolderPath))
             Directory.CreateDirectory(SettingsFolderPath);
@@ -170,18 +192,20 @@ public class CrossroadsSettings : MonoBehaviour
             }
             else
             {
-                if( TryRegisterySteamSearch() )
-                    return;
-                
-                finder.OnFindCompleteCallback = FinderComplete;
+                //try using the registery to locate steam and then using steamd game directory first
+                yield return TryRegisterySteamSearch();
 
-                //TODO: move coroutine into a variable that can be easily canceled?
-                StartCoroutine(finder.ThreadedFind(defaultGameFolderName));
+                if( foundGamePath )
+                    yield break;
+                
+                //if that doesn't work, try running the brute force finder
+                finder.OnFindCompleteCallback = WriteFoundGamePath;
+                yield return finder.ThreadedFind(defaultGameFolderName);
             }
         }
     }
-
-    bool TryRegisterySteamSearch()
+    
+    IEnumerator TryRegisterySteamSearch()
     {
         object value = null;
 
@@ -195,15 +219,15 @@ public class CrossroadsSettings : MonoBehaviour
         }
 
         if( value == null )
-            return false;
+            yield break;
 
         string steamConfigPath = (value as string) + "/Config/config.vdf";
 
         //something is horribly wrong in the universe
         if( !File.Exists( steamConfigPath ) )
         {
-            Debug.LogError( "cannot find config at "+ steamConfigPath );
-            return false;
+            Debug.LogError( "Cannot find config at "+ steamConfigPath );
+            yield break;
         }
 
         //BaseInstallFolder
@@ -238,8 +262,8 @@ public class CrossroadsSettings : MonoBehaviour
 
                     if( s.Contains( "Hollow Knight" ) )
                     {
-                        FinderComplete( s );
-                        return true;
+                        WriteFoundGamePath( s );
+                        yield break;
                     }
 
                     if( s.Contains( "SteamApps" ) )
@@ -248,21 +272,26 @@ public class CrossroadsSettings : MonoBehaviour
                         {
                             if( a.Contains( "Hollow Knight" ) )
                             {
-                                FinderComplete( a );
-                                return true;
+                                WriteFoundGamePath( a );
+                                yield break;
                             }
+                            yield return null;
                         }
                     }
+                    yield return null;
                 }
             }
             counter++;
 
             //TEST FOR NOW (update/remove me)
-            if( counter > 150000 )
-                return false;
+            if( counter > 200000 )
+                yield break;
+
+            if( counter % 1000 == 0 )
+                yield return null;
         }
 
-        return false;
+        yield break;
     }
 
     void CreateDefaultSettings()
@@ -329,8 +358,10 @@ public class CrossroadsSettings : MonoBehaviour
         return returnResult;
     }
 
-    void FinderComplete(string path)
+    void WriteFoundGamePath(string path)
     {
+        foundGamePath = true;
+
         Settings.gamePath = path;
         Settings.modsInstallPath = path + "\\" + defaultModInstallFolderName;
 
@@ -339,8 +370,6 @@ public class CrossroadsSettings : MonoBehaviour
 
         WriteSettingsToFile(Settings);
         finder.OnFindCompleteCallback = null;
-
-        LoadSettings(Settings);
     }
 
     void LoadSettings(AppSettings settings)

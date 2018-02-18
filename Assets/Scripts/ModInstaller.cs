@@ -9,7 +9,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
-public class ModInstaller : MonoBehaviour {
+public partial class ModInstaller : MonoBehaviour {
 
     [Header("Set to false to keep created files after leaving play mode")]
     public bool removeCreatedFoldersInEditorMode = true;
@@ -21,22 +21,6 @@ public class ModInstaller : MonoBehaviour {
 
     public Text status;
 
-
-    [XmlRoot( "ModManifest" )]
-    public class ModManifest
-    {
-        [XmlArray("ModElements")]
-        public List<ModElement> modElements;
-    }
-
-    [XmlRoot( "ModElement" )]
-    public class ModElement
-    {
-        [XmlElement("ElementName")]
-        public string elementName;
-        [XmlElement("ElementPath")]
-        public string elementPath;
-    }
 
     public string tempExtractionFolder = "Temp";
     public string TempExtractionFolderPath {
@@ -154,14 +138,14 @@ public class ModInstaller : MonoBehaviour {
         //if staging fails, clean up the temp folder
         if( !success )
         {
-            CleanPath( TempExtractionFolderPath );
+            CleanTempPath( TempExtractionFolderPath );
             return;
         }        
 
         //StageMod will add a stagedPaths entry for this modname if it is successful
         if( stagedPaths.ContainsKey(modname) )
         {
-            CrossroadsSettings.ModSettings modSettings = new CrossroadsSettings.ModSettings();
+            ModSettings modSettings = new ModSettings();
             modSettings.modName = modname;
 
             status.text = "Installing files for " + modname;
@@ -177,7 +161,7 @@ public class ModInstaller : MonoBehaviour {
             status.text = "Cleaning staged files for " + modname;
             foreach( string stagedPath in stagedPaths[ modname ] )
             {
-                CleanPath( stagedPath.TrimEnd('/') );
+                CleanTempPath( stagedPath.TrimEnd('/') );
             }
 
             //record the mod as "installed"
@@ -186,7 +170,7 @@ public class ModInstaller : MonoBehaviour {
         }
     }
     
-    void InstallModAtPath(string sourcePath, string installPath, CrossroadsSettings.ModSettings modSettings)
+    void InstallModAtPath(string sourcePath, string installPath, ModSettings modSettings )
     {
         Debug.Log( "Copying mod files from: "+ sourcePath +" to "+installPath);
 
@@ -195,44 +179,14 @@ public class ModInstaller : MonoBehaviour {
         DirectoryInfo from = new DirectoryInfo(sourcePath);
         DirectoryInfo to = new DirectoryInfo(installPath);
         DirectoryInfo backup = new DirectoryInfo(backupRoot);
+        
+        modSettings.backupFiles = new List<string>();
 
         BackupAll( from, to, backup, modSettings );
         CopyAll( from, to, modSettings );
     }
-
-    static bool ReadSettingsFromFile( string path, out ModManifest manifest )
-    {
-        manifest = null;
-
-        if( !File.Exists( path ) )
-        {
-            System.Windows.Forms.MessageBox.Show( "No settings file found at " + path );
-            return false;
-        }
-
-        bool returnResult = true;
-
-        XmlSerializer serializer = new XmlSerializer(typeof(ModManifest));
-        FileStream fstream = null;
-        try
-        {
-            fstream = new FileStream( path, FileMode.Open );
-            manifest = serializer.Deserialize( fstream ) as ModManifest;
-        }
-        catch( System.Exception e )
-        {
-            System.Windows.Forms.MessageBox.Show( "Error loading manifest file " + e.Message );
-            returnResult = false;
-        }
-        finally
-        {
-            fstream.Close();
-        }
-
-        return returnResult;
-    }
     
-    static void CleanPath( string path )
+    static void CleanTempPath( string path )
     {
         //only delete if it contains the Temp path, don't want to accidently delete anything important
         if( !path.Contains( "Temp" ) )
@@ -257,7 +211,7 @@ public class ModInstaller : MonoBehaviour {
         }
     }
 
-    public static void BackupAll( DirectoryInfo source, DirectoryInfo target, DirectoryInfo backup, CrossroadsSettings.ModSettings modSettings = null )
+    public static void BackupAll( DirectoryInfo source, DirectoryInfo target, DirectoryInfo backup, ModSettings modSettings = null )
     {
         if( !Directory.Exists( backup.FullName ) )
             Directory.CreateDirectory( backup.FullName );
@@ -289,9 +243,6 @@ public class ModInstaller : MonoBehaviour {
                         //record the install location of this file so we can uninstall it later
                         if( modSettings != null )
                         {
-                            if( modSettings.backupFiles == null )
-                                modSettings.backupFiles = new List<string>();
-
                             modSettings.backupFiles.Add( backupFile );
                         }
                     }
@@ -313,7 +264,7 @@ public class ModInstaller : MonoBehaviour {
     }
         
     //original method taken from: https://stackoverflow.com/questions/9053564/c-sharp-merge-one-directory-with-another
-    public void CopyAll( DirectoryInfo source, DirectoryInfo target, CrossroadsSettings.ModSettings modSettings = null )
+    public void CopyAll( DirectoryInfo source, DirectoryInfo target, ModSettings modSettings = null )
     {
         if( source.FullName.ToLower() == target.FullName.ToLower() )
             return;
@@ -354,6 +305,7 @@ public class ModInstaller : MonoBehaviour {
                     Debug.Log( " Copying readme from " + fi.FullName + " to " + modReadme );
                     fi.CopyTo( modReadme, true );
 
+                    //skip the normal copy for the readme
                     continue;
                 }
                 catch( Exception e )
@@ -391,7 +343,7 @@ public class ModInstaller : MonoBehaviour {
             {
                 System.Windows.Forms.MessageBox.Show( "Error copying mod file from " + fi.FullName + " to " + destFile + ". Error Message: " + e.Message );
             }
-        }
+        }//end foreach( FileInfo fi in source.GetFiles() )
 
         // Copy each subdirectory using recursion.
         foreach( DirectoryInfo diSourceSubDir in source.GetDirectories() )
@@ -420,4 +372,54 @@ public class ModInstaller : MonoBehaviour {
                 Directory.Delete( Application.dataPath + "/" + "Temp" + "/", true );
         }
     }
+
+
+    //[XmlRoot( "ModManifest" )]
+    //public class ModManifest
+    //{
+    //    [XmlArray("ModElements")]
+    //    public List<ModElement> modElements;
+    //}
+
+    //[XmlRoot( "ModElement" )]
+    //public class ModElement
+    //{
+    //    [XmlElement("ElementName")]
+    //    public string elementName;
+    //    [XmlElement("ElementPath")]
+    //    public string elementPath;
+    //}
+
+
+    //static bool ReadSettingsFromFile( string path, out ModManifest manifest )
+    //{
+    //    manifest = null;
+
+    //    if( !File.Exists( path ) )
+    //    {
+    //        System.Windows.Forms.MessageBox.Show( "No settings file found at " + path );
+    //        return false;
+    //    }
+
+    //    bool returnResult = true;
+
+    //    XmlSerializer serializer = new XmlSerializer(typeof(ModManifest));
+    //    FileStream fstream = null;
+    //    try
+    //    {
+    //        fstream = new FileStream( path, FileMode.Open );
+    //        manifest = serializer.Deserialize( fstream ) as ModManifest;
+    //    }
+    //    catch( System.Exception e )
+    //    {
+    //        System.Windows.Forms.MessageBox.Show( "Error loading manifest file " + e.Message );
+    //        returnResult = false;
+    //    }
+    //    finally
+    //    {
+    //        fstream.Close();
+    //    }
+
+    //    return returnResult;
+    //}
 }

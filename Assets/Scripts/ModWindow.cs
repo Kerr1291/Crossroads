@@ -5,24 +5,9 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
-namespace Games.EditorOnly
-{
-    [CustomEditor(typeof(Main))]
-    public class Main_Editor : Editor
-    {
-        Main _target;
-
-        public override void OnInspectorGUI()
-        {
-            _target = (Main)target;
-            
-            base.OnInspectorGUI();
-        }
-    }
-}
 #endif
 
-public class Main : MonoBehaviour 
+public class ModWindow : MonoBehaviour 
 {
     [SerializeField, HideInInspector]
     int screenWidth;

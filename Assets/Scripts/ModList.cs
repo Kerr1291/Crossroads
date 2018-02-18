@@ -20,6 +20,8 @@ public class ModList : MonoBehaviour {
 
     public Text status;
 
+    IEnumerator modUpdater = null;
+
     public void PopulateList()
     {
         previousState = new Dictionary<string, bool>();
@@ -27,7 +29,7 @@ public class ModList : MonoBehaviour {
         List<string> downloadableMods = downloader.GetListOfDownloadableMods();
 
         //TODO: get list of installed mods
-        List< CrossroadsSettings.ModSettings > installedMods = settings.Settings.installedMods;
+        List< ModSettings > installedMods = settings.Settings.installedMods;
 
         foreach(string s in downloadableMods)
         {
@@ -52,8 +54,9 @@ public class ModList : MonoBehaviour {
 
     public void UpdateMods()
     {
-        //TODO: save a reference to this and make sure it's not already going
-        StartCoroutine( DoUpdateMods() );
+        modUpdater = DoUpdateMods();
+        if( modUpdater != null )
+            StartCoroutine( modUpdater );
     }
 
     IEnumerator DoUpdateMods()
@@ -87,6 +90,8 @@ public class ModList : MonoBehaviour {
 
             ++i;
         }
+
+        modUpdater = null;
     }
 
     void InstallMod( ModListElement modElement )
@@ -119,6 +124,7 @@ public class ModList : MonoBehaviour {
 
     void RemoveMod( ModListElement modElement )
     {
-        //TODO:
+        status.text = "Unintalling " + modElement.ModName;
+        installer.UninstallMod( modElement.ModName );
     }
 }
