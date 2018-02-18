@@ -21,86 +21,142 @@ Hopefully in the future, mods will provide a modfiles.xml file that describes wh
       <Name>Modding API</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1PUulDJDeHEfIEl1hAithE1XLT8AXqOZ4]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>true</WritesOverAssembly>
+      <Dependencies />
     </ModLink>
     <ModLink>
       <Name>Lightbringer</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1JGfVZ9UpkkI8r6DdOm9-dFEcSkL6Ouf9]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>true</WritesOverAssembly>
+      <Dependencies />
     </ModLink>
     <ModLink>
       <Name>Dreamshield Co-Op</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1n55T0MqAqTz7JavFq5-SCU829mKl_fXD]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>true</WritesOverAssembly>
+      <Dependencies />
     </ModLink>
     <ModLink>
       <Name>Empress Muzznik</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1CEMz29ihRmn_HnizD3RAy5XB3c-LiNdz]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>true</WritesOverAssembly>
+      <Dependencies />
     </ModLink>
     <ModLink>
       <Name>Glass Soul</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1kw2CVcBtawuLlNQYKWicjw937Y-iV_2Z]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>true</WritesOverAssembly>
+      <Dependencies />
     </ModLink>
     <ModLink>
       <Name>Scale Mod</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1aNFj0ONrPbDDoORQoxGaZrHrSvknYUL-]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>true</WritesOverAssembly>
+      <Dependencies />
     </ModLink>
     <ModLink>
       <Name>Hell Mod</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1_VkTWanS5Tx8H50RAc2S3zEX_QhADJuV]]></Link>
       <DefaultInstallPath>/hollow_knight_Data</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Blackmoth</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=11u4QTDUeq_09t8DjXrMY0qIyKaWGz7Gz]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Debug Mod</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=0BzihlMHqh5UpWXhoS2hyZ2JUMEU]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Randomizer</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=0BzihlMHqh5UpTGEwVHJXc05NeGM]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Bonfire</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1YsthSD5-k8vVtK4orQBz_mZIF4_w-I4P]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Boss Rush</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1beVdRrkgaE0X0VZUMCklYI9CfOkQqbh1]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>HPBar</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1isjE6W0LcaoOqxKELrr_vgDDvnEL3-oa]]></Link>
       <DefaultInstallPath>/hollow_knight_Data/Managed/Mods</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>More Saves</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1yr832lq_jSCvX8Ve5qVIWlIl4kVVAmPD]]></Link>
       <DefaultInstallPath>/hollow_knight_Data/Managed/Mods</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Nightmare God Grimm</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=0B1-JBoX3q-gVYkUwSjNjZFNwTXM]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Player Data Tracker</Name><!-- API MOD CONTAINS EXTRA DLLS.... ADD SUPPORT FOR THIS -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1uuchDM0xvHk_E--RH-WUffcHPpRZX-Eh]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
     <ModLink>
       <Name>Charm Notch Mod</Name><!-- API MOD -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=0BzihlMHqh5UpUVQ5ZGlEdlcxOXM]]></Link>
       <DefaultInstallPath>/</DefaultInstallPath>
+      <WritesOverAssembly>false</WritesOverAssembly>
+      <Dependencies>
+        <string>Modding API</string>
+      </Dependencies>
     </ModLink>
   </ModList>
 </ModLinks>

@@ -75,6 +75,36 @@ public class ModDownloader : MonoBehaviour
         return foundModLink[0].defaultInstallPath;
     }
 
+    public bool GetDoesModWriteToAssemblyByName( string modName )
+    {
+        List<ModLink> foundModLink = modLinks.modList.Select(x => x).Where(x => x.name.Contains(modName)).ToList();
+
+        if( foundModLink.Count <= 0 )
+            return false;
+
+        return foundModLink[ 0 ].writesOverAssembly;
+    }
+
+    public List<string> GetModDependenciesByName( string modName )
+    {
+        List<ModLink> foundModLink = modLinks.modList.Select(x => x).Where(x => x.name.Contains(modName)).ToList();
+
+        if( foundModLink.Count <= 0 )
+            return new List<string>();
+
+        return foundModLink[ 0 ].dependencies;
+    }
+
+    public ModLink GetModLinkInfoByModByName( string modName )
+    {
+        List<ModLink> foundModLink = modLinks.modList.Select(x => x).Where(x => x.name.Contains(modName)).ToList();
+
+        if( foundModLink.Count <= 0 )
+            return null;
+
+        return foundModLink[ 0 ];
+    }
+
     IEnumerator DownloadMod(string modurl, string modname, Action<string, string> onDownloadComplete = null )
     {
         string downloadPath = settings.LocalModRepoFolderPath;
@@ -93,22 +123,12 @@ public class ModDownloader : MonoBehaviour
         {
             //TODO: enable a cancel button for them
 
-            //TODO: have this set the value on a progress bar
-            //Debug.Log(www.progress);
+            //TODO: have this set the value on a progress bar? may not be possible since the www.progress is inaccurate...?
 
+            status.text = "Downloading "+modname+": " + www.bytesDownloaded + "  bytes downloaded...";
 
-            //if( www. > .1f )
-            //{
-            //    status.text = "Downloading " + modname +" ("+(float)www.progress+"%)";
-            //}
-            //else
-            //{
-                status.text = "Downloading "+modname+": " + www.bytesDownloaded + "  bytes downloaded...";
-
-                if( www.bytesDownloaded == 0 )
-                    status.text = "Connecting...";
-            //}
-
+            if( www.bytesDownloaded == 0 )
+                status.text = "Connecting...";
 
             yield return null;
         }
@@ -165,7 +185,14 @@ public class ModDownloader : MonoBehaviour
         public string link;
         [XmlElement("DefaultInstallPath")]
         public string defaultInstallPath;
+        [XmlElement("WritesOverAssembly")]
+        public bool writesOverAssembly;
+
+        [XmlArray("Dependencies")]
+        public List<string> dependencies;
     }
+    
+
 
     bool ReadModLinksFromFile(string path, out ModLinks modlinks)
     {

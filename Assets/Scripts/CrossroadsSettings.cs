@@ -55,13 +55,13 @@ public class CrossroadsSettings : MonoBehaviour
     //folder for downloaded mod files
     [SerializeField]
     string localModRepoFolderName = "DownloadedMods";
-    string localModRepoFolderPath = "";
+    //string localModRepoFolderPath = "";
     public string LocalModRepoFolderPath
     {
         get
         {
-            if(!string.IsNullOrEmpty(localModRepoFolderPath))
-                return localModRepoFolderPath;
+            //if(!string.IsNullOrEmpty(localModRepoFolderPath))
+            //    return localModRepoFolderPath;
             return UnityEngine.Application.dataPath + "/" + localModRepoFolderName;
         }
     }
@@ -95,8 +95,8 @@ public class CrossroadsSettings : MonoBehaviour
         public string gamePath;
         [XmlElement("ModsInstallPath")]
         public string modsInstallPath;
-        [XmlElement("LocalModRepoPath")]
-        public string modRepoPath;
+        //[XmlElement("LocalModRepoPath")]
+        //public string modRepoPath;
 
         [XmlArray("InstalledMods")]
         public List<ModSettings> installedMods;
@@ -300,7 +300,7 @@ public class CrossroadsSettings : MonoBehaviour
         {
             gamePath = "Path Not Set",
             modsInstallPath = "Path Not Set",
-            modRepoPath = LocalModRepoFolderPath,
+            //modRepoPath = LocalModRepoFolderPath,
             installedMods = new List<ModSettings>()
         };
         Settings = defaultSettings;
@@ -383,15 +383,15 @@ public class CrossroadsSettings : MonoBehaviour
         Settings = settings;
 
         //create the folder to store downloaded mods
-        if( !Directory.Exists( Settings.modRepoPath ) )
-            Directory.CreateDirectory( Settings.modRepoPath );
+        if( !Directory.Exists( LocalModRepoFolderPath ) )
+            Directory.CreateDirectory( LocalModRepoFolderPath );
         
         //Debug.Log( "Game Path: " + Settings.gamePath );
         //Debug.Log( "Mod Repo Path: " + Settings.modRepoPath );
         //Debug.Log( "Mod Install Path: " + Settings.modsInstallPath );
 
         gamePathLabel.text = Settings.gamePath;
-        localRepoLabel.text = Settings.modRepoPath;
+        localRepoLabel.text = LocalModRepoFolderPath;
         modsFolderLabel.text = Settings.modsInstallPath;
 
         //TODO: process the data retrieved from the settings file

@@ -188,10 +188,12 @@ public partial class ModInstaller : MonoBehaviour {
     
     static void CleanTempPath( string path )
     {
+        Debug.Log( "Cleaning temp path: " + path );
         //only delete if it contains the Temp path, don't want to accidently delete anything important
         if( !path.Contains( "Temp" ) )
         {
             System.Windows.Forms.MessageBox.Show( @"Failed to clean path " + path + @" because path did not contain 'Temp'." );
+            Debug.LogError( @"Failed to clean path " + path + @" because path did not contain 'Temp'." );
             return;
         }
 
@@ -207,7 +209,9 @@ public partial class ModInstaller : MonoBehaviour {
         }
         catch( Exception e )
         {
-            System.Windows.Forms.MessageBox.Show( "Failed to clean path " + path + " with Error: " + e.Message );
+            //ignore the error box here for now, since it seems to be meaningless? TODO: look into this later
+            //System.Windows.Forms.MessageBox.Show( "Failed to clean path " + path + " with Error: " + e.Message + " ; If this is a Temp path, everything probably installed fine, but you may want to double check this path to make sure it's empty." );
+            Debug.LogError( "Failed to clean path " + path + " with Error: " + e.Message );
         }
     }
 

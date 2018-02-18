@@ -20,16 +20,21 @@ public class ModList : MonoBehaviour {
 
     public Text status;
 
+    public string idleStatusMessage = "Configure mods and click Update Mods";
+
     IEnumerator modUpdater = null;
+
+    IEnumerator modInstaller = null;
+
+    List<string> queuedDepencencyDownloads = new List<string>();
 
     public void PopulateList()
     {
         previousState = new Dictionary<string, bool>();
 
         List<string> downloadableMods = downloader.GetListOfDownloadableMods();
-
-        //TODO: get list of installed mods
-        List< ModSettings > installedMods = settings.Settings.installedMods;
+        
+        //List< ModSettings > installedMods = settings.Settings.installedMods;
 
         foreach(string s in downloadableMods)
         {
@@ -38,18 +43,24 @@ public class ModList : MonoBehaviour {
 
             listItem.ModName = s;
 
-            bool isInstalled = installedMods.Select(x => x).Where(x => x.modName.Contains(s)).ToList().Count > 0;
+            //bool isInstalled = installedMods.Select(x => x).Where(x => x.modName.Contains(s)).ToList().Count > 0;
 
-            //TODO: set install status
-            listItem.InstallStatus = isInstalled;
+            ModSettings installedMod = settings.GetInstalledModByName(s);
+            
+            listItem.InstallStatus = installedMod != null;
+
+            listItem.ModType = downloader.GetDoesModWriteToAssemblyByName( s ) ? "Assembly" : "API";
+
+            listItem.ModDependencies = downloader.GetModDependenciesByName( s );
 
             listItem.gameObject.SetActive( true );
+
             modElements.Add( listItem );
 
             previousState.Add( listItem.ModName, listItem.InstallStatus );
         }
 
-        status.text = "Configure mods and click Update Mods";
+        status.text = idleStatusMessage;
     }
 
     public void UpdateMods()
@@ -68,6 +79,20 @@ public class ModList : MonoBehaviour {
             //only update one mod at a time
             if( downloader.IsDownloading() )
                 continue;
+
+            //only install one mod at a time
+            if( modInstaller != null )
+                continue;
+
+            //do we have any dependencies queued?
+            if( queuedDepencencyDownloads.Count > 0 )
+            {
+                string next = queuedDepencencyDownloads[0];
+                Debug.Log( "Downloading queued dependency: " + next );
+                queuedDepencencyDownloads.RemoveAt( 0 );
+                downloader.DownloadModByName( next, InstallDownloadedMod );
+                continue;
+            }
 
             yield return null;
 
@@ -91,6 +116,8 @@ public class ModList : MonoBehaviour {
             ++i;
         }
 
+        yield return new WaitForSeconds( 1f );
+        status.text = idleStatusMessage;
         modUpdater = null;
     }
 
@@ -103,7 +130,8 @@ public class ModList : MonoBehaviour {
 
     void InstallDownloadedMod(string modname, string modpath)
     {
-        StartCoroutine( DoInstallDownloadedMod( modname, modpath ) );
+        modInstaller = DoInstallDownloadedMod( modname, modpath );
+        StartCoroutine( modInstaller );
     }
 
     IEnumerator DoInstallDownloadedMod(string modname, string modpath)
@@ -115,9 +143,37 @@ public class ModList : MonoBehaviour {
 
         string defaultInstallPath = downloader.GetDefaultInstallPathByModByName(modname);
 
-        //Debug.Log( defaultInstallPath );
+        //TODO: post a warning about the conflit and resolution/removal for users
 
+        //remove mods that conflit with this mod
+        CheckAndResolveConflicts( modname );
+
+        //install this mod
+        //TODO: correctly handle a failed install
         installer.InstallMod( modpath, modname, defaultInstallPath );
+
+        UpdateModListState( modname, true );
+
+        List<string> dependencies = downloader.GetModDependenciesByName(modname);
+
+        modInstaller = null;
+
+        //does it have dependencies?
+        if(dependencies.Count > 0)
+        {
+            //see if we need to get them
+            foreach(string s in dependencies)
+            {
+                Debug.Log( "Queuing dependency for download: " + s );
+                //is the mod already installed? if so skip queuing it
+                if( settings.GetInstalledModByName( s ) != null )
+                    continue;
+
+                //don't double download
+                if( !queuedDepencencyDownloads.Contains(s) )
+                    queuedDepencencyDownloads.Add( s );
+            }
+        }
 
         yield break;
     }
@@ -126,5 +182,42 @@ public class ModList : MonoBehaviour {
     {
         status.text = "Unintalling " + modElement.ModName;
         installer.UninstallMod( modElement.ModName );
+    }
+
+
+    void CheckAndResolveConflicts( string modnameToInstall )
+    {
+        bool writesToAssembly = downloader.GetDoesModWriteToAssemblyByName(modnameToInstall);
+
+        Debug.Log( modnameToInstall + " writes to assembly. Checking if we have a conflict" );
+
+        //if this mod writes to assembly-csharp, remove other assembly mods first
+        if( writesToAssembly )
+        {
+            foreach(var mod in settings.Settings.installedMods)
+            {
+                string modName = mod.modName;
+                bool modWritesToAssembly = downloader.GetDoesModWriteToAssemblyByName( modName );
+
+                //does it write to assembly? uninstall it.
+                if(modWritesToAssembly)
+                {
+                    Debug.Log( modName + " ALSO writes to assembly. Uninstalling before we start the install." );
+                    installer.UninstallMod( modName );
+                    UpdateModListState( modName, false );
+                }
+            }
+        }
+    }
+
+    void UpdateModListState(string modname, bool newState)
+    {
+        previousState[ modname ] = newState;
+
+        foreach( var m in modElements )
+        {
+            if( m.ModName == modname )
+                m.InstallStatus = newState;
+        }
     }
 }
