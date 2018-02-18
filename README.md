@@ -21,6 +21,8 @@ Then it will allow automated downloading and installing of hollow knight mods.
   * Display mod authors and version information
   * Display/Check mod versions and links
   * Display mod readme files in a viewer
+  * Change the "Update" button to say "Apply" or something more clear
+  * Have unapplied changes in the mod list show as highlighted a specific color
 
 ...and more?
 
