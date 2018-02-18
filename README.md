@@ -12,8 +12,10 @@ Then it will allow automated downloading and installing of hollow knight mods.
 
   * (Done) Backup files before mod installation
   * (Done) Used the now tracked mod files install information to uninstall mods
-  * Manage mod dependencies and conflicts
-  * Add GOG version links
+  * (Done) Manage mod dependencies and conflicts
+  * Add support for manual path setting
+  * Add support for canceling downloads
+  * Add GOG version links and differentiate between steam/GOG mods.
   * Display mod authors and version information
   * Display/Check mod versions and links
   * Display mod readme files in a viewer
