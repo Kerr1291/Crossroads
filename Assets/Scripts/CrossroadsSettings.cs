@@ -120,16 +120,16 @@ public class CrossroadsSettings : MonoBehaviour
         }
         else
         {
-            if( File.Exists( Settings.gamePath + "/hollow_knight.exe" ) )
+            if( File.Exists( appSettings.gamePath + "/hollow_knight.exe" ) )
             {
                 foundGamePath = true;
             }
             else
             {
                 if( Application.isEditor )
-                    Debug.LogError( "Warning: Did not find hollow_knight.exe at " + Settings.gamePath );
+                    Debug.LogError( "Warning: Did not find hollow_knight.exe at " + appSettings.gamePath );
                 else
-                    System.Windows.Forms.MessageBox.Show( "Warning: Did not find hollow_knight.exe at "+Settings.gamePath );
+                    System.Windows.Forms.MessageBox.Show( "Warning: Did not find hollow_knight.exe at "+ appSettings.gamePath );
             }
         }
         
@@ -203,6 +203,8 @@ public class CrossroadsSettings : MonoBehaviour
                 yield return finder.ThreadedFind(defaultGameFolderName);
             }
         }
+
+        yield break;
     }
     
     IEnumerator TryRegisterySteamSearch()
