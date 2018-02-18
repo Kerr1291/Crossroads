@@ -1,7 +1,7 @@
 # Crossroads
 Mod Loader for Hollow Knight
 
-CURRENTLY WIP - USE AT YOUR OWN RISK
+To download: Find the latest release under the releases section
 
 To build: Requires at least Unity 2017.3.1f1
 
