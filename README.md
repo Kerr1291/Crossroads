@@ -1,7 +1,19 @@
 # Crossroads
-Mod Loader for Hollow Knight
+Crossroads: Mod Loader for Hollow Knight (Alpha v.21, Windows 7/10 support)
 
-To download: Find the latest release under the releases section
+This application allows for automatic installation and uninstallation of mods for Hollow Knight. Simply run this application and after it loads, select the mods you wish to install/uninstall and click "Apply Changes".
+
+If it does not automatically detect your Hollow Knight game folder, use the button to navigate to the folder and select it manually.
+
+Any mod dependencies will be downloaded automatically. If a mod conflicts with another mod, that mod will be uninstalled before installing the new mod.
+
+Use the "Backup Saves" button to backup your hollow knight saves and the "Restore Saves" button to restore your hollow knight saves.
+
+Download link: https://github.com/Kerr1291/Crossroads/releases/download/v00.21/Crossroads.zip
+
+Report bugs at: (Please leave what version of hollow knight you are using, [GOG/Steam] thanks!)
+https://github.com/Kerr1291/Crossroads/issues(edited)
+
 
 To build: Requires at least Unity 2017.3.1f1
 
