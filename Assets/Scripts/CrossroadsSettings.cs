@@ -203,9 +203,12 @@ public class CrossroadsSettings : MonoBehaviour
                     yield break;
                 
                 //if that doesn't work, try running the brute force finder
-                finder.OnFindCompleteCallback = WriteFoundGamePath;
 
-                yield return finder.ThreadedFind(defaultGameFolderName);
+                //for now, let's not do this as it seems to break on some PCs
+                //TODO: figure out how to get this working
+                //finder.OnFindCompleteCallback = WriteFoundGamePath;
+
+                //yield return finder.ThreadedFind(defaultGameFolderName);
             }
         }
 
