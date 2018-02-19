@@ -21,6 +21,7 @@ public partial class ModInstaller : MonoBehaviour {
 
     public Text status;
 
+    public Button backupRestoreButton = null;
 
     public string tempExtractionFolder = "Temp";
     public string TempExtractionFolderPath {
@@ -365,6 +366,87 @@ public partial class ModInstaller : MonoBehaviour {
     string GetModReadmePath( string modname )
     {
         return settings.ReadmePath + "/" + modname + "/";
+    }
+
+    public void BackupSaves()
+    {
+        string savePath = Application.persistentDataPath;
+
+        savePath = savePath.Substring( 0, savePath.LastIndexOf( "/" ) );
+        savePath = savePath.Substring( 0, savePath.LastIndexOf( "/" ) );
+
+        savePath += "/Team Cherry/Hollow Knight/";
+
+        Debug.Log( "Copying saves to backups" );
+
+        string backupPath = settings.BackupPath + "/Saves";
+
+        if( !Directory.Exists( backupPath ) )
+            Directory.CreateDirectory( backupPath );
+        
+        foreach(string saveFile in Directory.EnumerateFiles(savePath))
+        {
+            string file = Path.GetFileName(saveFile);
+
+            //make sure this is a save file
+            if( !file.Contains( "user" ) )
+                continue;
+
+            string dest = backupPath +"/"+file;
+
+            //copy it in
+            File.Copy( saveFile, dest, true );
+
+            Debug.Log( "Copied " + saveFile + " to " + dest );
+        }
+
+        ActivateRestoreSaveButton();
+    }
+
+    public void ActivateRestoreSaveButton()
+    {
+        if( backupRestoreButton != null )
+            backupRestoreButton.interactable = true;        
+    }
+
+    public bool HasSaveBackups()
+    {
+        string backupPath = settings.BackupPath + "/Saves";
+
+        return ( Directory.Exists( backupPath ) && (Directory.GetFiles( backupPath ).Length > 0) );
+    }
+
+    public void RestoreSavesFromBackup()
+    {
+        if( !HasSaveBackups() )
+            return;
+
+        string savePath = Application.persistentDataPath;
+
+        savePath = savePath.Substring( 0, savePath.LastIndexOf( "/" ) );
+        savePath = savePath.Substring( 0, savePath.LastIndexOf( "/" ) );
+
+        savePath += "/Team Cherry/Hollow Knight/";
+
+        Debug.Log( "Restoring backups" );
+
+        string backupPath = settings.BackupPath + "/Saves";
+
+        foreach( string saveFile in Directory.EnumerateFiles( backupPath ) )
+        {
+            string file = Path.GetFileName(saveFile);
+
+            //make sure this is a save file
+            if( !file.Contains( "user" ) )
+                continue;
+
+            string dest = savePath + "/" + file;
+
+            //copy the backup in
+            File.Copy( saveFile, dest, true );
+
+            Debug.Log( "Copied " + saveFile + " to " + dest );
+        }
     }
 
     //Cleanup install folders on quit in editor mode

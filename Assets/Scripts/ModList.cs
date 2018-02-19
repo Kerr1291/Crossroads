@@ -61,6 +61,9 @@ public class ModList : MonoBehaviour {
         }
 
         status.text = idleStatusMessage;
+
+        if( installer.HasSaveBackups() )
+            installer.ActivateRestoreSaveButton();
     }
 
     public void UpdateMods()
