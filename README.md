@@ -9,10 +9,13 @@ Any mod dependencies will be downloaded automatically. If a mod conflicts with a
 
 Use the "Backup Saves" button to backup your hollow knight saves and the "Restore Saves" button to restore your hollow knight saves.
 
-Download link: https://github.com/Kerr1291/Crossroads/releases/download/v00.21/Crossroads.zip
+Download link: 
+
+https://github.com/Kerr1291/Crossroads/releases/download/v00.21/Crossroads.zip
 
 Report bugs at: (Please leave what version of hollow knight you are using, [GOG/Steam] thanks!)
-https://github.com/Kerr1291/Crossroads/issues(edited)
+
+https://github.com/Kerr1291/Crossroads/issues
 
 
 To build: Requires at least Unity 2017.3.1f1
