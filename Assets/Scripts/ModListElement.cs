@@ -16,6 +16,9 @@ public class ModListElement : MonoBehaviour {
     public Color assemblyColor = Color.red;
     public Color apiColor = Color.green;
 
+    public Color unsavedColor = Color.yellow;
+
+
     public string ModName {
         get {
             return modName.text;
@@ -74,5 +77,15 @@ public class ModListElement : MonoBehaviour {
 
             modDependencies.text = dependencies;
         }
+    }
+
+    public void SetToUnsavedColor()
+    {
+        installStatus.image.color = unsavedColor;
+    }
+
+    public void SetToNormalColor()
+    {
+        installStatus.image.color = Color.white;
     }
 }

@@ -30,6 +30,13 @@ public class FileFinder
         return files;
     }
 
+    bool searchCanceled = false;
+    public void CancelSearch()
+    {
+        searchCanceled = true;
+        if( tokenSource != null )
+            tokenSource.Cancel();
+    }
 
     public string SearchResult { get; private set; }
     public bool Running { get; private set; }
@@ -84,6 +91,7 @@ public class FileFinder
     public IEnumerator ThreadedFind(string fileToFind)
     {
         //Debug.LogError( "STARTING FIND" );
+        searchCanceled = false;
         SearchResult = null;
         Running = true;
         tokenSource = new System.Threading.CancellationTokenSource();
@@ -169,6 +177,9 @@ public class FileFinder
         Debug.Log( "search done" );
 
         Running = false;
+
+        if( searchCanceled )
+            yield break;
 
         //Debug.Log( "SearchResult " );
         //Debug.Log( SearchResult );

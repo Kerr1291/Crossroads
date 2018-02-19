@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using System.IO;
 using Microsoft.Win32;
 using System;
+using SFB;
 
 public class CrossroadsSettings : MonoBehaviour
 {
@@ -129,7 +130,10 @@ public class CrossroadsSettings : MonoBehaviour
                 if( Application.isEditor )
                     Debug.LogError( "Warning: Did not find hollow_knight.exe at " + appSettings.gamePath );
                 else
-                    System.Windows.Forms.MessageBox.Show( "Warning: Did not find hollow_knight.exe at "+ appSettings.gamePath );
+                    System.Windows.Forms.MessageBox.Show( "Warning: Did not find hollow_knight.exe at " + appSettings.gamePath +@". Please find the 'Hollow Knight' directory and select it." );
+                
+                SelectHollowKnightExe();
+                appSettings = Settings;
             }
         }
         
@@ -138,10 +142,10 @@ public class CrossroadsSettings : MonoBehaviour
         {
             //Error???? Though we may have already errored by now so this may be reduntant
         }
-
+        
         LoadSettings( appSettings );
     }
-    
+
     public void AddInstalledModInfo( ModSettings modSettings )
     {
         Settings.installedMods.Add( modSettings );
@@ -200,6 +204,7 @@ public class CrossroadsSettings : MonoBehaviour
                 
                 //if that doesn't work, try running the brute force finder
                 finder.OnFindCompleteCallback = WriteFoundGamePath;
+
                 yield return finder.ThreadedFind(defaultGameFolderName);
             }
         }
@@ -364,7 +369,9 @@ public class CrossroadsSettings : MonoBehaviour
     {
         foundGamePath = true;
 
+        Debug.Log( Settings.gamePath );
         Settings.gamePath = path;
+        Debug.Log( Settings.gamePath );
         Settings.modsInstallPath = path + "\\" + defaultModInstallFolderName;
 
         if(!Directory.Exists(Settings.modsInstallPath))
@@ -376,30 +383,60 @@ public class CrossroadsSettings : MonoBehaviour
 
     void LoadSettings(AppSettings settings)
     {
+        Debug.Log( "trying to load settings" );
         if( Loaded )
             return;
 
         if(settings == null)
             return;
-
+        
         Settings = settings;
 
         //create the folder to store downloaded mods
         if( !Directory.Exists( LocalModRepoFolderPath ) )
             Directory.CreateDirectory( LocalModRepoFolderPath );
         
-        //Debug.Log( "Game Path: " + Settings.gamePath );
-        //Debug.Log( "Mod Repo Path: " + Settings.modRepoPath );
-        //Debug.Log( "Mod Install Path: " + Settings.modsInstallPath );
-
         gamePathLabel.text = Settings.gamePath;
         localRepoLabel.text = LocalModRepoFolderPath;
         modsFolderLabel.text = Settings.modsInstallPath;
-
-        //TODO: process the data retrieved from the settings file
+        
         Loaded = true;
         if(OnLoaded != null)
             OnLoaded.Invoke();
+    }
+
+    public void SelectHollowKnightExe()
+    {
+        if( finder.Running )
+            finder.CancelSearch();
+
+        string startingPath = @"C:\Program Files (x86)";
+
+        var paths = StandaloneFileBrowser.OpenFolderPanel( "Select your Hollow Knight game folder", startingPath, false);
+
+        foreach( var s in paths )
+            Debug.Log( s );
+
+        if( paths.Length > 0 )
+        {
+            string checkPath = paths[0];
+
+            if( Directory.Exists(checkPath) && File.Exists( checkPath + "/hollow_knight.exe" ) )
+            {
+                Settings.gamePath = checkPath;
+                Settings.modsInstallPath = checkPath + "\\" + defaultModInstallFolderName;
+                WriteFoundGamePath( checkPath );
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show( "hollow_knight.exe not found in "+checkPath );
+                foundGamePath = false;
+            }
+        }
+        else
+        {
+            foundGamePath = false;
+        }
     }
 
     //Cleanup install folders on quit in editor mode

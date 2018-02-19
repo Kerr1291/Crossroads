@@ -58,6 +58,8 @@ public class ModList : MonoBehaviour {
             modElements.Add( listItem );
 
             previousState.Add( listItem.ModName, listItem.InstallStatus );
+
+            listItem.SetToNormalColor();
         }
 
         status.text = idleStatusMessage;
@@ -115,6 +117,8 @@ public class ModList : MonoBehaviour {
                 }
                 previousState[ modElements[ i ].ModName ] = modElements[ i ].InstallStatus;
             }
+
+            modElements[ i ].SetToNormalColor();
 
             ++i;
         }
