@@ -20,6 +20,8 @@ public class ModList : MonoBehaviour {
 
     public Text status;
 
+    public Toggle isGOG;
+
     public string idleStatusMessage = "Configure mods and click Update Mods";
 
     IEnumerator modUpdater = null;
@@ -27,6 +29,14 @@ public class ModList : MonoBehaviour {
     IEnumerator modInstaller = null;
 
     List<string> queuedDepencencyDownloads = new List<string>();
+
+    public void SetIsGOG()
+    {
+        if( isGOG == null )
+            return;
+
+        settings.SetIsGOG(isGOG.isOn);
+    }
 
     public void PopulateList()
     {
@@ -63,6 +73,17 @@ public class ModList : MonoBehaviour {
         }
 
         status.text = idleStatusMessage;
+
+        //disable the "isgog" button if we're in a steam path...
+        if( settings.Settings.gamePath.ToLower().Contains( "steam" ) )
+        {
+            isGOG.gameObject.SetActive( false );
+        }
+        else
+        {
+            if( settings.Settings.isGOG.HasValue )
+                isGOG.isOn = settings.Settings.isGOG.Value;
+        }
 
         if( installer.HasSaveBackups() )
             installer.ActivateRestoreSaveButton();

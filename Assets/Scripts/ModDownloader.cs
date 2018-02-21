@@ -9,6 +9,9 @@ using System.IO;
 using Ionic.Zip;
 using System;
 
+//TODO: add support for custom compatibilities
+//Example: bonfire doesn't work with blackmoth
+
 public class ModDownloader : MonoBehaviour 
 {
     public CrossroadsSettings settings;
@@ -59,7 +62,14 @@ public class ModDownloader : MonoBehaviour
 
         ModLink toDownload = foundModLink[0];
 
-        currentDownload = DownloadMod( toDownload.link, toDownload.name, onDownloadComplete );
+        string downloadLink = toDownload.link;
+
+        if(settings.Settings.isGOG != null && settings.Settings.isGOG == true && toDownload.gogLink != null && toDownload.gogLink.Length > 1 )
+        {
+            downloadLink = toDownload.gogLink;
+        }
+
+        currentDownload = DownloadMod( downloadLink, toDownload.name, onDownloadComplete );
         //TODO: keep track of these so we can stop them?
         StartCoroutine( currentDownload );      
     }
@@ -183,6 +193,8 @@ public class ModDownloader : MonoBehaviour
         public string name;
         [XmlElement("Link")]
         public string link;
+        [XmlElement(ElementName = "GOGLink", IsNullable = true)]
+        public string gogLink;
         [XmlElement("DefaultInstallPath")]
         public string defaultInstallPath;
         [XmlElement("WritesOverAssembly")]

@@ -20,13 +20,15 @@ Hopefully in the future, mods will provide a modfiles.xml file that describes wh
     <ModLink>
       <Name>Modding API</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
       <Link><![CDATA[https://drive.google.com/uc?export=download&id=1PUulDJDeHEfIEl1hAithE1XLT8AXqOZ4]]></Link>
+      <GOGLink><![CDATA[https://drive.google.com/uc?export=download&id=1PUulDJDeHEfIEl1hAithE1XLT8AXqOZ4]]></GOGLink>
       <DefaultInstallPath>/</DefaultInstallPath>
       <WritesOverAssembly>true</WritesOverAssembly>
       <Dependencies />
     </ModLink>
     <ModLink>
       <Name>Lightbringer</Name><!-- WRITES TO ASSEMBLY-CSHARP -->
-      <Link><![CDATA[https://drive.google.com/uc?export=download&id=1JGfVZ9UpkkI8r6DdOm9-dFEcSkL6Ouf9]]></Link>
+      <Link><![CDATA[https://drive.google.com/uc?export=download&id=1Si09V2eMFrjYx7m_684Bz82dH-7Fj4cQ]]></Link>
+      <GOGLink><![CDATA[https://drive.google.com/uc?export=download&id=1JGfVZ9UpkkI8r6DdOm9-dFEcSkL6Ouf9]]></GOGLink>
       <DefaultInstallPath>/</DefaultInstallPath>
       <WritesOverAssembly>true</WritesOverAssembly>
       <Dependencies />

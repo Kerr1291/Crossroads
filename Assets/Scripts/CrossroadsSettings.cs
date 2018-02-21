@@ -101,6 +101,9 @@ public class CrossroadsSettings : MonoBehaviour
 
         [XmlArray("InstalledMods")]
         public List<ModSettings> installedMods;
+
+        [XmlElement(ElementName ="IsGOG", IsNullable = true)]
+        public bool? isGOG;
     }
 
     public AppSettings Settings { get; private set; }
@@ -156,6 +159,12 @@ public class CrossroadsSettings : MonoBehaviour
     {
         Settings.installedMods = Settings.installedMods.Select(x => x).Where(x => x.modName != modName).ToList();
         WriteSettingsToFile(Settings);
+    }
+
+    public void SetIsGOG(bool newState)
+    {
+        Settings.isGOG = newState;
+        WriteSettingsToFile( Settings );
     }
 
     public ModSettings GetInstalledModByName(string modname)
