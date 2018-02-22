@@ -240,6 +240,24 @@ public class CrossroadsSettings : MonoBehaviour
         if( value == null )
             yield break;
 
+        //search local steam directories first
+        string localSteamPath = (value as string) + "/SteamApps/common";
+        Debug.Log( localSteamPath );
+        if( Directory.Exists( localSteamPath ) )
+        {
+            foreach( string s in Directory.EnumerateDirectories( localSteamPath ) )
+            {
+                Debug.Log( s );
+                if( s.Contains( "Hollow Knight" ) )
+                {
+                    WriteFoundGamePath( s );
+                    yield break;
+                }
+                yield return null;
+            }
+        }
+
+        //now search any alternate directories
         string steamConfigPath = (value as string) + "/Config/config.vdf";
 
         //something is horribly wrong in the universe
@@ -255,7 +273,7 @@ public class CrossroadsSettings : MonoBehaviour
         string line;
         Debug.Log( "parsing config" );
 
-        // Read the file and display it line by line.  
+            // Read the file and display it line by line.  
         System.IO.StreamReader file = new System.IO.StreamReader(steamConfigPath);
         while( ( line = file.ReadLine() ) != null )
         {
@@ -381,9 +399,9 @@ public class CrossroadsSettings : MonoBehaviour
     {
         foundGamePath = true;
 
-        Debug.Log( Settings.gamePath );
+        //Debug.Log( Settings.gamePath );
         Settings.gamePath = path;
-        Debug.Log( Settings.gamePath );
+        //Debug.Log( Settings.gamePath );
         Settings.modsInstallPath = path + "\\" + defaultModInstallFolderName;
 
         if(!Directory.Exists(Settings.modsInstallPath))

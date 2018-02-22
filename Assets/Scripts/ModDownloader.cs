@@ -12,30 +12,67 @@ using System;
 //TODO: add support for custom compatibilities
 //Example: bonfire doesn't work with blackmoth
 
-public class ModDownloader : MonoBehaviour 
+public class ModDownloader : MonoBehaviour
 {
+    [Header("Set to false to keep created files after leaving play mode")]
+    public bool removeCreatedFoldersInEditorMode = true;
+
     public CrossroadsSettings settings;
 
     public ModLinks modLinks;
 
     public Text status;
 
+    public bool Loaded { get; private set; }
+
     public string ModLinksPath
     {
         get
         {
-            return Application.streamingAssetsPath + "/modlinks.xml";
+            return settings.SettingsFolderPath + "modlinks.xml";
         }
     }
 
-    void Awake()
-    {
-        Setup();
+    public string ModLinksURL {
+        get {
+            return "https://drive.google.com/uc?export=download&id=1HN5P35vvpFcjcYQ72XvZr35QxD09GUwh";
+        }
     }
 
-    void Setup()
+    IEnumerator Start()
     {
+        Loaded = false;
+
+        status.text = "Downloading most recent mod database...";
+
+        WWW www = new WWW(ModLinksURL);
+        while( !www.isDone )
+            yield return null;
+
+        FileStream fstream = null;
+        try
+        {
+            fstream = new FileStream( ModLinksPath, FileMode.Create );
+
+            BinaryWriter writer = new BinaryWriter(fstream);
+            writer.Write( www.bytes );
+            writer.Close();
+        }
+        catch( System.Exception e )
+        {
+            System.Windows.Forms.MessageBox.Show( "Error downloading modlinks: " + e.Message );
+        }
+        finally
+        {
+        }
+
+        fstream?.Close();
+        www?.Dispose();
+
+        yield return null;
+
         ReadModLinksFromFile( ModLinksPath, out modLinks );
+        Loaded = true;
     }
 
     public List<string> GetListOfDownloadableMods()
@@ -236,5 +273,16 @@ public class ModDownloader : MonoBehaviour
         }
 
         return returnResult;
+    }
+
+
+    //Cleanup install folders on quit in editor mode
+    void OnApplicationQuit()
+    {
+        if( Application.isEditor && removeCreatedFoldersInEditorMode )
+        {
+            if( File.Exists( ModLinksPath ) )
+                File.Delete( ModLinksPath );
+        }
     }
 }

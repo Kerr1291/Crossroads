@@ -40,13 +40,23 @@ public class ModList : MonoBehaviour {
 
     public void PopulateList()
     {
+        StartCoroutine( DoPopulateList() );
+    }
+
+    IEnumerator DoPopulateList()
+    {
+        while( !downloader.Loaded )
+        {
+            yield return null;
+        }
+
         previousState = new Dictionary<string, bool>();
 
         List<string> downloadableMods = downloader.GetListOfDownloadableMods();
-        
+
         //List< ModSettings > installedMods = settings.Settings.installedMods;
 
-        foreach(string s in downloadableMods)
+        foreach( string s in downloadableMods )
         {
             ModListElement listItem = Instantiate( modListElementPrefab );
             listItem.transform.SetParent( contentParent );
@@ -56,7 +66,7 @@ public class ModList : MonoBehaviour {
             //bool isInstalled = installedMods.Select(x => x).Where(x => x.modName.Contains(s)).ToList().Count > 0;
 
             ModSettings installedMod = settings.GetInstalledModByName(s);
-            
+
             listItem.InstallStatus = installedMod != null;
 
             listItem.ModType = downloader.GetDoesModWriteToAssemblyByName( s ) ? "Assembly" : "API";
@@ -87,6 +97,8 @@ public class ModList : MonoBehaviour {
 
         if( installer.HasSaveBackups() )
             installer.ActivateRestoreSaveButton();
+
+        yield break;
     }
 
     public void UpdateMods()
