@@ -81,11 +81,11 @@ public class ModListElement : MonoBehaviour {
 
     public void SetToUnsavedColor()
     {
-        installStatus.image.color = unsavedColor;
+        installStatus.graphic.color = unsavedColor;
     }
 
     public void SetToNormalColor()
     {
-        installStatus.image.color = Color.white;
+        installStatus.graphic.color = Color.green;
     }
 }
