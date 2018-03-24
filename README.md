@@ -1,5 +1,5 @@
 # Crossroads
-Crossroads: Mod Loader for Hollow Knight (Alpha v.41, Windows 7/10 support)
+Crossroads: Mod Loader for Hollow Knight (v0.51, Windows 7/10 support)
 
 This application allows for automatic installation and uninstallation of mods for Hollow Knight. Simply run this application and after it loads, select the mods you wish to install/uninstall and click "Apply Changes".
 
@@ -31,7 +31,7 @@ Then it will allow automated downloading and installing of hollow knight mods.
   * (Done) Add support for backing up saves
   * (Done) Add support for manual game/install path setting
   * Add support for canceling downloads
-  * Add support for re-downloading mods that have already been downloaded and/or clearing installed downloads
+  * (Done)Add support for re-downloading mods that have already been downloaded and/or clearing installed downloads
   * (Done) Add GOG version links and differentiate between steam/GOG mods.
   * Display mod authors and version information
   * Display/Check mod versions and links
