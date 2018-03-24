@@ -75,6 +75,8 @@ public class ModList : MonoBehaviour {
 
             listItem.gameObject.SetActive( true );
 
+            listItem.owner = this;
+
             modElements.Add( listItem );
 
             previousState.Add( listItem.ModName, listItem.InstallStatus );
@@ -161,11 +163,17 @@ public class ModList : MonoBehaviour {
         modUpdater = null;
     }
 
-    void InstallMod( ModListElement modElement )
+    //TODO: make this into an actual update that checks for a new version first
+    public void UpdateMod( ModListElement modElement )
+    {
+        InstallMod( modElement, true );
+    }
+
+    void InstallMod( ModListElement modElement, bool downloadEvenIfFileExists = false )
     {
         Debug.Log( "downloading "+ modElement.ModName );
         status.text = "Downloading " + modElement.ModName;
-        downloader.DownloadModByName( modElement.ModName, InstallDownloadedMod );
+        downloader.DownloadModByName( modElement.ModName, InstallDownloadedMod, downloadEvenIfFileExists );
     }
 
     void InstallDownloadedMod(string modname, string modpath)
@@ -222,6 +230,7 @@ public class ModList : MonoBehaviour {
     {
         status.text = "Unintalling " + modElement.ModName;
         installer.UninstallMod( modElement.ModName );
+        modElement.InstallStatus = false;
     }
 
 
@@ -257,7 +266,9 @@ public class ModList : MonoBehaviour {
         foreach( var m in modElements )
         {
             if( m.ModName == modname )
+            {
                 m.InstallStatus = newState;
+            }
         }
     }
 }

@@ -5,9 +5,12 @@ using UnityEngine.UI;
 using System.Linq;
 
 public class ModListElement : MonoBehaviour {
+    
+    public ModList owner;
 
     public Text modName;
     public Toggle installStatus;
+    public Button updateButton;
 
     public Text modDependencies;
 
@@ -34,6 +37,11 @@ public class ModListElement : MonoBehaviour {
         }
         set {
             installStatus.isOn = value;
+            ShowUpdateButton( value );
+            if(value)
+            {
+                SetToNormalColor();
+            }
         }
     }
 
@@ -87,5 +95,15 @@ public class ModListElement : MonoBehaviour {
     public void SetToNormalColor()
     {
         installStatus.graphic.color = Color.green;
+    }
+
+    public void ShowUpdateButton(bool show)
+    {
+        updateButton.gameObject.SetActive( show );
+    }
+    
+    public void UpdateMod()
+    {
+        owner.UpdateMod( this );
     }
 }

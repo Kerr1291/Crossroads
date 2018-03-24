@@ -87,7 +87,7 @@ public class ModDownloader : MonoBehaviour
         return currentDownload != null;
     }
 
-    public void DownloadModByName(string modName, Action<string, string> onDownloadComplete = null)
+    public void DownloadModByName(string modName, Action<string, string> onDownloadComplete = null, bool downloadEvenIfFileExists = false )
     {
         List<ModLink> foundModLink = modLinks.modList.Select(x => x).Where(x => x.name.Contains(modName)).ToList();
 
@@ -106,7 +106,7 @@ public class ModDownloader : MonoBehaviour
             downloadLink = toDownload.gogLink;
         }
 
-        currentDownload = DownloadMod( downloadLink, toDownload.name, onDownloadComplete );
+        currentDownload = DownloadMod( downloadLink, toDownload.name, onDownloadComplete, downloadEvenIfFileExists );
         //TODO: keep track of these so we can stop them?
         StartCoroutine( currentDownload );      
     }
@@ -152,15 +152,20 @@ public class ModDownloader : MonoBehaviour
         return foundModLink[ 0 ];
     }
 
-    IEnumerator DownloadMod(string modurl, string modname, Action<string, string> onDownloadComplete = null )
+    IEnumerator DownloadMod(string modurl, string modname, Action<string, string> onDownloadComplete = null, bool downloadEvenIfFileExists = false )
     {
         string downloadPath = settings.LocalModRepoFolderPath;
         string modDownloadPath = downloadPath + "/" + modname + ".zip";
-        if( File.Exists( modDownloadPath ) )
+
+        //download if the file already exists?
+        if( !downloadEvenIfFileExists )
         {
-            onDownloadComplete?.Invoke( modname, modDownloadPath );
-            currentDownload = null;
-            yield break;
+            if( File.Exists( modDownloadPath ) )
+            {
+                onDownloadComplete?.Invoke( modname, modDownloadPath );
+                currentDownload = null;
+                yield break;
+            }
         }
 
         Debug.Log( "Downloading " + modname );

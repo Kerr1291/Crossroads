@@ -13,7 +13,7 @@ using SFB;
 public class CrossroadsSettings : MonoBehaviour
 {
     //Find us at #modding here
-    //Hollow Knight Discord: https://discord.gg/jru7cvT
+    //Hollow Knight Discord: https://discord.gg/hollowknight
 
     [Header("Set to false to keep created files after leaving play mode")]
     public bool removeCreatedFoldersInEditorMode = true;
@@ -114,6 +114,14 @@ public class CrossroadsSettings : MonoBehaviour
     IEnumerator Start()
     {
         Loaded = false;
+        
+        if( Application.dataPath.Contains( "Temp" ) )
+        {
+            System.Windows.Forms.MessageBox.Show( "Crossroads will not run from inside a windows Temp directory. Please extract this program into another location." );
+            Application.Quit();
+            yield break;
+        }
+
         yield return SetupDefaults();
 
         AppSettings appSettings = new AppSettings();
