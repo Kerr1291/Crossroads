@@ -11,7 +11,7 @@ Use the "Backup Saves" button to backup your hollow knight saves and the "Restor
 
 Download link: 
 
-https://github.com/Kerr1291/Crossroads/releases/download/v00.41/Crossroads_v.41.zip
+https://github.com/Kerr1291/Crossroads/releases/download/v00.51/Crossroads_v.51.zip
 
 Report bugs at: (Please leave what version of hollow knight you are using, [GOG/Steam] thanks!)
 
